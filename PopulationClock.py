@@ -3,6 +3,7 @@ from pyppeteer import launch
 from bs4 import BeautifulSoup
 import time
 
+# Load website for 3 sec and scrape the website
 async def main():
     browser = await launch()
     page = await browser.newPage()
@@ -13,7 +14,8 @@ async def main():
     await browser.close()
     return html
 
-def scrape_world_population(html_response):
+# Parse the response
+def world_population(html_response):
     soup = BeautifulSoup(html_response, 'html.parser')
 
     world_population_10e9 = soup.select_one('span.rts-nr-int.rts-nr-10e9').get_text()
@@ -25,10 +27,11 @@ def scrape_world_population(html_response):
 
     print('World Population:', world_population_string)
 
+# Run everything in a loop
 async def run_loop():
     while True:
         html_response = await main()
-        scrape_world_population(html_response)
+        world_population(html_response)
         time.sleep(3)
 
 asyncio.get_event_loop().run_until_complete(run_loop())
